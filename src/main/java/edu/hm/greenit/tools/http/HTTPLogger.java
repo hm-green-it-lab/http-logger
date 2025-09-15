@@ -44,8 +44,8 @@ public class HTTPLogger implements QuarkusApplication {
     }
 
     @RunOnVirtualThread
-    @Scheduled(cron = "${procfs.cron}", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
-    void readAndDisplayProcFSData() throws IOException {
+    @Scheduled(cron = "${httplogger.cron}", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
+    void readAndDisplayHttpLoggerData() throws IOException {
         for (String httpEndpoint : httpEndpointsToMonitor) {
             fetchData(httpEndpoint);
         }
