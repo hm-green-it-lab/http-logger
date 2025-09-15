@@ -25,7 +25,10 @@ jobs:
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Start Measurement
         uses: green-coding-solutions/eco-ci-energy-estimation@v5
         with:
