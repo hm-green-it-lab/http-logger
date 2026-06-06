@@ -13,12 +13,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * HTTP Logger application that periodically fetches data from HTTP endpoints.
+ */
 @ApplicationScoped
 @QuarkusMain
 public class HTTPLogger implements QuarkusApplication {
 
     private final List<String> httpEndpointsToMonitor = new ArrayList<>();
 
+    /**
+     * Entry point for the application.
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         Quarkus.run(HTTPLogger.class, args);
     }
@@ -31,9 +39,12 @@ public class HTTPLogger implements QuarkusApplication {
     }
 
     private void parseArguments(String[] args) {
-        if (args == null) args = new String[0];
+        String[] endpointArgs = args;
+        if (endpointArgs == null) {
+            endpointArgs = new String[0];
+        }
 
-        for (String arg : args) {
+        for (String arg : endpointArgs) {
             if (arg.startsWith("http")) {
                 httpEndpointsToMonitor.add(arg);
             } else {
@@ -43,6 +54,9 @@ public class HTTPLogger implements QuarkusApplication {
 
     }
 
+    /**
+     * Scheduled method to read and display HTTP logger data.
+     */
     @RunOnVirtualThread
     @Scheduled(cron = "${httplogger.cron}", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void readAndDisplayHttpLoggerData() throws IOException {
@@ -51,7 +65,7 @@ public class HTTPLogger implements QuarkusApplication {
         }
     }
 
-    public void fetchData(final String httpEndpoint) {
+    private void fetchData(final String httpEndpoint) {
         try (Client client = ClientBuilder.newClient()) {
 
             System.out.println("DATA:" + httpEndpoint + " at " + System.currentTimeMillis());
